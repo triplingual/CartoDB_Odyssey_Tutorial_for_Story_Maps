@@ -23,7 +23,9 @@ Just to be different from @mapninja and because I can't hang with his tattooing 
  * etc...
 
 ### Geocoding
-* When I have fewer than, say, 20 street addresses to geocode, I prefer educational institution options, like the open [Texas A&M geocoding service](https://geoservices.tamu.edu/Services/Geocode/Interactive/)
+
+Above, it's noted that you need to have the latitude and longitude of your locations. How do you get that?
+* When I have fewer than, say, 20 street addresses to geocode, I prefer FOSS and/or educational institution options, like the open [Texas A&M geocoding service](https://geoservices.tamu.edu/Services/Geocode/Interactive/)
 * You can also go to [Google Maps](http://maps.google.com), find your location, **right-click** on it and select **What's Here**. You can *cut-&-paste** the coordinates from the resulting info window)
 ![what's here](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/googlemapswhatshere.png)![Google Maps Coordinates](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/googlemapslatlong.png)
 * If you code, the options open up significantly wider, but that's out of scope for this tutorial.
