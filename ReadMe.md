@@ -1,207 +1,47 @@
-#Using CartoDB and Odyssey.js for Making Story Maps
+# Using Odyssey.js for Making Story Maps
 
-Contact me at stacemaples@stanford.edu
+Contact me at [trip.kirkpatrick@yale.edu](mailto:trip.kirkpatrick@yale.edu)
 
-This tutorial has been written so that it is generic enough for anyone to easily create a story map using a free CartoDB account and Odyssey.js. The tutorial is written specifically to support a course at Stanford University, but is being made publicly available for the benefit of all. We like the [FOSS4G](https://2015.foss4g-na.org/) ethos, here, and try to live it. 
+This tutorial has been written so that it is generic enough for anyone to easily create a story map using an open geocoding interface and Odyssey.js. The tutorial is written specifically to support a course at Yale University, and is forked from a wonderful [@mapninja tutorial](https://github.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps) that works with CartoDB and whose pictures I haven't completely replaced yet. My context makes using CartoDB a little overkill, but I like that I can direct students to [@mapninja](http://github.com/mapninja)'s work if they want to go that direction. I like the [FOSS4G](https://2015.foss4g-na.org/) ethos and try to live it.
 
-I'll be matching up information from various sources ([Wikipedia](http://www.wikipedia.org), etc...) on the modern history of tattooing in San Francisco. Mostly because it's interesting, and there is plenty of material that is cool to look at. That said, I'm not a historian and this is not an authoritative map of that history (now that I think of it, that would be cool though). It's a tutorial on how to make a Story Map from CartoDB and Odyssey.js. 
+Just to be different from @mapninja and because I can't hang with his tattooing knowledge depth, I'm going with bowling lanes that are duckpins or offer duckpins. I also like bowling duckpins. Knowledge of lanes locations comes from [an amateur source](http://www.duckpins.com/houses.htm) (in the sense of people who love the sport), but I have no reason to doubt it. However, I'll still disclaim any pretense to accuracy in the map.
 
-###In This Tutorial, You Will Learn To:
+### In This Tutorial, You Will Learn To:
 
-* Create an empty CartoDB table
-* Populate that table with fields for your data
-* Add the data to your new empty table
-* **'Geocode'** your records so that they show up on the map
-* Customize the **Pop-up** and **Hover** doo-dads
-* Find your Map ID to put into Odyssey.js
+* **'Geocode'** your records so you'll have what to make them show up on the map
 * Use the Odyssey.js 'Sandbox' to create a basic Story Map
 * Use an historic map from DavidRumsey.com as a basemap in your Story Map
 * Share your Odyssey.js Story Map with a URL, Embed Code, or host it yourself.
 
-###What You Will Need Before Getting Started
+### What You Will Need Before Getting Started
 * Something interesting to make a Story Map of!
 * Information about the locations that make up your story
- * The **Latitude & Longitude** of your locations (Go to [Google Maps](http://maps.google.com), find your location, **right-click** on it and select **What's Here**. You can *cut-&-paste** the coordinates from the resulting info window)  
-![what's here](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/googlemapswhatshere.png)  ![Google Maps Coordinates](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/googlemapslatlong.png)
+ * The **Latitude & Longitude** of your locations
  * Links (URLs) to images
  * Links (URLs) to more content
  * Narrative text about your subject
- * etc...  
-* A **CartoDB account**. You can get a free one, here: [CartoDB Free Account](https://cartodb.com/signup). If you have an **.edu** email address, you can get a slightly better one, here: [CartoDB Academy Account](https://cartodb.com/signup?plan=academy)
+ * etc...
 
-###It Would Be Incredibly Helpful if You...
-* Go through the following [CartoDB Academy courses:](http:/academy.cartodb.com/) 
- * [Online Mapping for Beginners](http://academy.cartodb.com/courses/01-beginners-course.html#) - Basic concepts of online mapping
- * [Introduction to Map Design](http://academy.cartodb.com/courses/02-design-for-beginners.html) - Master the basics of designing data for your maps!
-* Learn more about [MarkDown](http://daringfireball.net/projects/markdown/), which is the text /ing 'language' you will use to create the content in your Odyssey.js Story Map (It's also what this tutorial is written in!).
-* Take a look at these pages from the w3schools.com:
- * [HTML img Tag](http://www.w3schools.com/tags/tag_img.asp) - We'll use this to turn our image URL into the image in our pop-ups
- * [HTML a Tag](http://www.w3schools.com/tags/tag_a.asp) - We'll use this to turn our Link URLs into actual links in our pop-ups
+### Geocoding
+* When I have fewer than, say, 20 street addresses to geocode, I prefer educational institution options, like the open [Texas A&M geocoding service](https://geoservices.tamu.edu/Services/Geocode/Interactive/)
+* You can also go to [Google Maps](http://maps.google.com), find your location, **right-click** on it and select **What's Here**. You can *cut-&-paste** the coordinates from the resulting info window)
+![what's here](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/googlemapswhatshere.png)![Google Maps Coordinates](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/googlemapslatlong.png)
+* If you code, the options open up significantly wider, but that's out of scope for this tutorial.
 
-##Getting Started with CartoDB
-* Login to your CartoDB Account (if you don't have one, see above).
 
-###Create an Empty Map/Dataset
-* Click on the **New Map** Button.
+### It Could Be Helpful if You . . .
+* Learn more about [Markdown](http://daringfireball.net/projects/markdown/), which is the text /ing markup syntax you will use to create the content in your Odyssey.js Story Map (It's also what this tutorial is written in!).
+* Take a look at these pages from w3schools.com:
+ * [HTML IMG element](http://www.w3schools.com/tags/tag_img.asp) — We'll use this to turn our image URL into the image in our pop-ups
+ * [HTML A element](http://www.w3schools.com/tags/tag_a.asp) — We'll use this to turn our Link URLs into actual links in our pop-ups
 
-![New Map Button](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/newmap.png)
+## Creating a Story Map with Odyssey.js
 
-* Click on the **Create New Map** button
+Now that you've created the data for your Story Map, you're ready to go and build the narrative/navigation part of your application. We're going to use Odyssey.js for this. [Odyssey.js](https://github.com/CartoDB/odyssey.js) is actually a JavaScript library that you can use on your own web  server, but CartoDB has implemented a **Sandbox** that allows non-programmers to deploy a story map with very little coding and without any web server infrastructure at all. Odyssey.js uses a very simple text markup language called **Markdown**. This entire tutorial is actually written in **Markdown**, which allows GitHub to render the lists, HTML links, and other elements.
 
-![Create a new map](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/createnew.png)
+### Choosing an Odyssey.js Template
 
-* Click on your **untitled_map** to highlight it and then click the **Create Empty Map** link at the top right of the page
-
-![Create a new map, again](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/createemptymap.png)
-
-* Click on yet another **Create Map** button...
-
-![Create a new map, again](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/createnewmapagain.png)
-
-###Adding Fields to an Empty CartoDB Table
-![Initial Map View](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/initialmapview.png)
-You should now see something like the image, above, with a basic CartoDB Basemap and the tools you need to begin building your map. You should have already gone through the CartoDB Academy Basic courses, so we won't go through all of the details, now. We're going to get right to work creating fields to hold our content. Let's get started...
-
-* Click on the **Data View** button at the top of the page...
-
-![Create a new map, again](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/dataview.png)
-
-* CartoDB will tell you to start adding rows, but we're not ready for that, yet. First, we want to add some columns to hold the content we want in our pop-ups and hoveer actions. Click on the **Add Columns** button, instead...
-
-![Add Columns](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/addcolumns.png)
-
-* Our blank table already has **description** and **name** fields, so we don't need to add those. We *do* want to add images to our pop-ups, as well as links our image sources and maybe even links to other websites with more information on the subject of the points we input. Let's add columns for those...
-
-Add the following columns using the **Add new column** dialog box (just click the **Add Column** button again for each one):
-* **'img_url1'** with a type of **'string'** (this will hold the URL for the image you want to show up in your pop-up)
-* **'img_url1_src'** with a type of **'string'** (to hold the URL of the website you got the image from)
- * If you want more than one image per pop-up, just add more sets of **'img_url#'** and **'img_url#_src'** columns, iterating the number (not too many, though, you'll be able to insert images into the narrative text of your Odyssey.js Story Map)
-* **'link_url1'** with a type of **'string'** (This will hold a URL to link out to other sources of information)
- * Again, if you want more links, just iterate the **'link_url#'** column
-* **'latitude'** with a type of **'number'**
-* **'longitude'** with a type of **'number'**
-
-![Add Columns](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/addnewcolumndialog.png)
-
-##Entering Your Data!
-Now it's time to start putting some content into your CartoDB table. Hopefully, you've already assembled the materials you need and can simply begin to **cut-&-paste** that data into your table.
-
-* First, click on either of the **Add Row** buttons at the left side of the first empty row, or at the bottom right of the table, right above the **Add Column** button.
-
-![Add a Row](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/addnewrow.png)
-
-* Now simply **double-click** in the **cell** you want to / and **cut-&-paste** the data for your locations into the table.
-
-![Editing Cell Values](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/editingcells.png)
-
-**Now all you need to do is repeat the process for all of your locations!**
-
-###Geocoding Your Locations (making them show up on the map)
-Once you have finished entering all of your data, you need to tell CartoDB that your **'latitude'** & **'longitude'** fields contain the geographic information about your locations. This will create **geometry** data in the default column, **'the-geom'**.
-* Click on the orange **GEO** button, to the right of the name of the **'the_geom'** column
-
-![GEO Button](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/geobutton.png)
-
-* CartoDB should guess that your coordinate columns are called **'longitude'** & **'latitude'**
-* Click **Continue**
-
-![Geocoding (selecting the columns)](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/geocontinue.png)
-
->You may have noticed that we could have simply placed **street addresses** into our table and **'geocoded'** our data that way. We used **coordinate** for two reasons:
->* First, **geocoding street addresses** in CartoDB comes with a quota, **geocoding** with **coordinates** doesn't...
->* Second, we're mapping historical locations/addresses that might not necessarily be the same, now, as they were, historically. Streets change names, disappear and are created through time.
-
-![the_geom](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/the_geom.png)
-
-* That's it! You should see your coordinates in the **'the_geom'** column, now!
-* Click on the **MAP VIEW** button at the top and center of the page to see your locations appear on the map.
-
-![Map View](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/mapview.png)
-
-Ok. You've got a CartoDB map, now. We're not going to go into creating custom symbols, etc... since you can just go the the **CartoDB Academy** page (see the top of this page) and get all of that. We're just going to stick with the default symbol for this tutorial.
-
-###Customizing the Click & Hover Pop-ups
-
-Now we want to do a little culstomization of the pop-ups that will appear when you click or hover on the points in your map. Notice that, right now, nothing happens when you hover over a point, and you get a message that ***"You haven’t selected any fields to be shown in the infowindow."*** when you click on a point. Now is time to fix that, but we're going to go beyond just showing the fields we've entered, since they are just **URLs** and not terribly interesting. 
-
-![Boring default pop-up](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/defaultpopup.png)
-
-* Click on the **infowindow** button to open the CartoDB control panel at the right side of the page. 
-
-![infowindow customization](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/popupbutton.png)
-
-* Click on the **header** dropdown and select the **image header** type
-
-![Header Selection](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/headerdropdown.png)
-
-* Use the **switches** to turn on all but the **latitude** & **longitude** fields for display in the pop-up
-* Toggle all of the **title** checkboxes **off**
-* **Drag-and-Drop** the enabled fields to reorder them so that they are ordered like so:
- * **name**
- * **description**
- * **link_url1**
-* Now, click on the **Change HTML** link at the top right of the Cick pop-up panel
-
-![Change HTML Link](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/changehtml.png)
-
-* Find the following code:
->      <h1 class="order1">{{description}}</h1>
-
-    And replace it with:
->      <h1 class="order1">{{name}}</h1>
-
-    and click **Apply**
-
-This should change the text in the pop-up header to the **name** value you put in the corresponding column.
-
-* Find the following code:  
-
-```
-	<img src="{{name}}"
-```
-
-* And replace it with:  
-
-```
-    <img src="{{img_url1}}"
-```
-
-* and click **Apply**
-
-This should replace the current error message in the header with the image for which you placed the URL in your **'img_url1'** column.
-
-
-* Finally, find the following code:  
-
-```
-	<p>{{link_url1}}</p>
-```
-
-* And replace it with:  
-
-```
-	<a href="{{link_url1}}" target="_blank"'>More Information</a>
-```
-
-* and click **Apply**
-
-![Custom Pop-up](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/custompopup.png)
-
-###A Little More Work
-You can customize your CartoDB map a bit more, now, using the **Options** button, etc... I suggest at least setting the options for **Scroll Wheel Zoom**.
-
-![Options](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/options.png)
-
-That's it! We're now ready to switch gears to create a Story Map with **Odyssey.js**
-
-You can find my Tattoo map at: http://cdb.io/1FXtGQ9 
-##Creating a Story Map with Odyssey.js
-
-Now that you've created the data for your story map, you're ready to go and build the narrative/navigation part of your application. We're going to use Odyssey.js for this. Odyssey.js is actually a JavaScript library that you can use on your own web  server, but CartoDB has implemented a **Sandbox** that allows non-programmers to deploy a story map with very little coding and without any web server infrastructure, at all. Odyssey.js uses a very simple text matkup language called **Markdown**. This entire tutorial is actually written in **Markdown**, which allows Github to render the lists, HTML links and other elements. 
-
-###Choosing an Odyssey.js Template
-
-* First, go to http://cartodb.github.io/odyssey.js/ and click on the **Create Story** button
+* First, go to [the Odyssey.js Sandbox](http://cartodb.github.io/odyssey.js/) and click on the **Create Story** button
 
 ![Create a Story](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/createstory.png)
 
@@ -213,7 +53,7 @@ You should now see the **Odyssey.js Sandbox** template for a slideshow style sto
 
 ![Odyssey.js Slide Template Sandbox](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/odysseyslidestemplate.png)
 
-###Customize the **config block** of Your Odyssey.js Applicaiton
+### Customize the **config block** of Your Odyssey.js Applicaiton
 
 * At the top of the *Oddysey Sandbox** panel, you should see two lines of text that look like this:
 ```
@@ -226,44 +66,18 @@ You should now see the **Odyssey.js Sandbox** template for a slideshow style sto
 * Go ahead and customize it so that it reflects the **title** and **author** for your project:
 ```
     ```
-    -title: "The Tattoo Map of San Francisco"
-    -author: "Stace Maples"
+    -title: "Duckpins Across Connecticut"
+    -author: "Trip Kirkpatrick"
     ```
 ```
 
-###Bringing your CartoDB Visualization into Odyssey.js 
+### Adding a Slide to Your Story Map
 
-The first thing we want to do is bring the **CartoDB Visualization** we created into the Odyssey.js application. We're going to use the **[vizjson](http://cartodb.github.io/odyssey.js/documentation/#optional-options)** option in the **[config block](http://cartodb.github.io/odyssey.js/documentation/#config-block)** of your Odyssey.js markdown. First, you will need the JavaScript API URL of your visualization.
-
-* Return to the CartoDB page for your visualization and click on the **Share** button
-
-![Share Button](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/share.png)
-
-* Click on the **Copy** button under the CartoDB.js panel to copy your CartoDB.js API URL
-
-![Slides Template](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/cartodbjskey.png)
-
-* Return to the **Odyssey Sandbox** and paste '**vizjson: "*Your CartoDB.js API URL*"**' with your **CartoDB.js API URL** into the **config block**, so that it now looks something like this:
-
-```
-    ```
-    -title: "The Tattoo Map of San Francisco"
-    -author: "Stace Maples"
-    -vizjson: "https://stanfordgeo.cartodb.com/u/stacemaples/api/v2/viz/7840fa14-e940-11e4-bb41-0e49835281d6/viz.json"
-    ```
-```
-
-Note that the data points from your CartoDB visualization should now be visible in your map.
-
-![vizjson](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/vizjson.png)
-
-###Adding a Slide to Your Story Map
-
-Now you're ready to start adding the content of your slides to the Oddysey.js Sandbox. Now is a good time to review a little bit about the Markdown language that drives the Odyssey.js application. As mentioned above, [Markdown](http://daringfireball.net/projects/markdown/syntax) is a text markup language that acts a bit like shorthand for writing HTML code. Markdown simplifies the process of creating HTML text formatting, add ing images, links and other content to a page meant for the web. This entire tutorial is written in [Markdown](http://daringfireball.net/projects/markdown/syntax). 
+Now you're ready to start adding the content of your slides to the Oddysey.js Sandbox. Now is a good time to review a little bit about the Markdown language that drives the Odyssey.js application. As mentioned above, [Markdown](http://daringfireball.net/projects/markdown/syntax) is a text markup language that acts a bit like shorthand for writing HTML code. Markdown simplifies the process of creating HTML text formatting, add ing images, links and other content to a page meant for the web. This entire tutorial is written in [Markdown](http://daringfireball.net/projects/markdown/syntax).
 Odyssey.js uses [Markdown](http://daringfireball.net/projects/markdown/syntax) in thhe way it is intended (to format text and content) with one important exception. The **H1 Heading** element is used by Odyssey.js to signal the beginning of a "new slide." You can see this in the **Odyssey.js Sandbox** if you count the number of **dots** at the top of the content panel on the left, and then count the number of lines in the ODYSSEY SANDBOX panel on the right that begin with the **\#** symbol. Same number! Each **H1 Header** line in the Sandobox define the begining of a new slide, as well as the Title text of that slide.
 
-####Here are a few more important bits of [Markdown](http://daringfireball.net/projects/markdown/syntax) syntax:
-###Headers
+#### Here are a few more important bits of [Markdown](http://daringfireball.net/projects/markdown/syntax) syntax:
+##### Headers
 
     # Level 1 (H1) Header, also indicates the beginning of a new slide in Odyssey.js
     ## Level 2 Header
@@ -273,10 +87,10 @@ And will render like this:
 ## Level 2 Header
 ### Level 3 Header
 
-###Paragraph Text
+##### Paragraph Text
 	Paragraph text is just paragraph text. You can **bold** text or use *italics*. Those are the most common uses and they end up looking like this:
 Paragraph text is just paragraph text. You can **bold** text or use *italics*. Those are the most common uses and they end up looking like this.
-### Lists
+##### Lists
 
     1. This
     2. Is
@@ -295,7 +109,7 @@ Which renders like this:
 3. An  
 4. Ordered  
 5. List
-  
+
 * This
 * Is
 * A
@@ -303,43 +117,48 @@ Which renders like this:
 * List
 
 
-### Links
+##### Links
 
     Create Links like this: [Google](http://google.com)
 
-Which Renders like this:
-[Google](http://google.com)
+Which Renders like this: [Google](http://google.com)
 
-###Images
-    You can place an image like this: 
-	
-	![Stace is silly](http://web.stanford.edu/~maples/images/staceissilly.jpg "Beardo")
+##### Images
+You can place an image like this:
+
+	![Mustache Salovey](https://31.media.tumblr.com/a9fef6920600c4ce095d83cde0f7c185/tumblr_inline_mifn6hHBM31qz4rgp.jpg "Pre-presidential Salovey")
 
 Which will render like this:
 
-![Stace is silly](http://web.stanford.edu/~maples/images/staceissilly.jpg "Beardo")
+![Mustache Salovey](https://31.media.tumblr.com/a9fef6920600c4ce095d83cde0f7c185/tumblr_inline_mifn6hHBM31qz4rgp.jpg "Stachio")
 
-That's as far as we are going to dive into Markdown for this tutorial, but there is loads more you can do with it. If you want' to find out more, go to [http://daringfireball.net/projects/markdown/syntax](http://daringfireball.net/projects/markdown/syntax)
+That's as far as we are going to dive into Markdown for this tutorial, but there is loads more you can do with it. If you want to find out more, go to [http://daringfireball.net/projects/markdown/syntax](http://daringfireball.net/projects/markdown/syntax)
 
-##Making Your First Odyssey.js Slide
+## Making Your First Odyssey.js Slide
 
-Ok, time to create your first Story Map slide. 
-* Return to the **Odyssey Sandbox** and place your curser on the blank line just above the deafult first slide **H1** header and add the **Title Text** you want for your first slide, like this:
-
+Ok, time to create your first Story Map slide.
+* Return to the **Odyssey Sandbox** and place your cursor on the blank line just above the deafult first slide **H1** header and add the **Title Text** you want for your first slide, like this:
 ```
-    #Lyle Tuttle's First Tattoo Shop
+    ```
+    #Johnson's Lanes
+    ```
 ```
 
 * Hit **Enter**
-* Now position the map so that the *crosshair* in the center of the screen is directly above the location you want to highlight. Use the **Zoom** tool to change the scale of the map, until you are happy with the view.
-* Notice that when you created the **H1** header for your slide, a little **ADD** button appeared to the left of it in the **Odyssey Sandbox**. Click on that **ADD** button to snapshot the view for the slide. Select the option to ***move map to the current position***.
+* Add information for the latitude and longitude (that you got from Geocoding before) and zoom level (which will take a bit of fiddling)
+```
+    ```
+    - center: [41.36849786, -72.91981278]
+    - zoom: 9
+    ```
+```
 
 ![Add a New Slide](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/addslide.png)
 
-###Add more slides!
-Now that you know how, you can delete the **Sandbox** Markdown below your first slide and add all of the slides you want! Insert Images, etc...
+### Add more slides!
+Now that you know how, you can delete the **Sandbox** Markdown below your first slide and add all of the slides you want! Insert Images, etc. . . .
 
-##Using a Georeferenced Map from [DavidRumsey.com](http://www.davidrumsey.com/view/georeferenced-maps) as Your Basemap
+## Using a Georeferenced Map from [DavidRumsey.com](http://www.davidrumsey.com/view/georeferenced-maps) as Your Basemap
 
 It's possible to change the basemap of your **Odyssey.js** Story Map, either using the Basemap Selector at the bottom of the **Sandbox** panel, or by adding a bit of code to the **config block**. This is a bit tricky, but I will briefly explain it here.
 
@@ -372,10 +191,10 @@ It's possible to change the basemap of your **Odyssey.js** Story Map, either usi
 	-baseurl: "http://georeferencer-0.tileserver.com//266b60e098fda1ddbe521ebff0e4d8676a549302/map/CGtnosESWB2NnsgVyjmQc5/201411301752-7AINSs/affine/{z}/{x}/{y}.png"  
 ```
 
-##Sharing your Story Map
+## Sharing your Story Map
 Once you have created all the slides you are interested in putting into your Story Map, you are ready to share your work with the world. The **Odyssey.js Sandbox** allows you to do this in three ways:
 
-####Sharing with an URL or Embed code
+#### Sharing with an URL or Embed code
 **Odyssey.js** can export your Story Map directly to a site called [bl.ocks.org](http://bl.ocks.org), which is just a platform for sharing and rendering JavaSript code, or give you an **IFRAME** code snippet to paste into your blog, or other website.
 
 * First, click on the **Share** button (it looks like a paper airplane)
@@ -386,88 +205,200 @@ Once you have created all the slides you are interested in putting into your Sto
 
 ![Share Story Map](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/shareurl.png)
 
-Here's the [bl.ocks.org]() version **(URL)** of the tutorial map: http://bl.ocks.org/anonymous/raw/409cb9de4c713e082dee
+Here's the [bl.ocks.org](http://bl.ocks.org/anonymous/raw/bfbe91970e81ef2faa43) version **(URL)** of the tutorial map.
 
-Here's the map in my blog: http://www.stacemaples.com/tattoo-map-of-san-francisco-odyssey-js-tutorial-sample/  
 
-####Downloading and Hosting Your Story Map
-You can also download the code for your Story Map and host it on your own Web Server (provided you have one). 
+And in the [course blog](http://wgss380f2015.coursepress.yale.edu/2015/10/26/odyssey-js-map/).
 
-* Click on the **Download story** button in the **Odyssey Sandbox** panel and save the resulting **.zip** file to your computer. 
+
+#### Downloading and Hosting Your Story Map
+You can also download the code for your Story Map and host it on your own Web Server (provided you have one).
+
+* Click on the **Download story** button in the **Odyssey Sandbox** panel and save the resulting **.zip** file to your computer.
 * Extract the **Odyssey.html** file and copy it to your Web Server. It's ready to go! You can make customizations to the code, if you like.
 
 ![Download Odyssey](https://raw.githubusercontent.com/mapninja/CartoDB_Odyssey_Tutorial_for_Story_Maps/master/images/edit/downloadodyssey.png)
 
-Here's the map hosted on my web server: http://web.stanford.edu/~maples/maps/odyssey/odyssey.html  
+Here's the map hosted on [a Yale web server](http://sprout002.sprout.yale.edu/docc/f15/mapping/odyssey.html) I use.
 
-##Here is the Markdown Code for the Sample Story Map I Just Walked Through, Above:
+## Here is the Markdown Code for the Sample Story Map I Just Walked Through, Above:
 
-
-	```
-	-baseurl: "http://georeferencer-0.tileserver.com//266b60e098fda1ddbe521ebff0e4d8676a549302/map/CGtnosESWB2NnsgVyjmQc5/201411301752-7AINSs/affine/{z}/{x}/{y}.png"
-	-title: "The Tattoo Map of San Francisco"
-	-author: "Stace Maples"
-	-vizjson: "https://stanfordgeo.cartodb.com/u/stacemaples/api/v2/viz/7840fa14-e940-11e4-bb41-0e49835281d6/viz.json"
-	```
-	#The Tattoo Map of San Francisco
-	```
-	- center: [37.7687, -122.4355]
-	- zoom: 13
-	```
-	The History of American Tattooing and the City of San Francisco have an intimate relationship. This map explores that relationship. It is by no means authoritative, or comprehensive. Slides and information will be added, over time.
-
-	#Lyle Tuttle's First Tattoo Shop
-	```
-	- center: [37.7801, -122.4121]
-	- zoom: 16
-	```
-	![Lyle Tuttle](http://www.cdn1.inkedout4life.com/wp-content/uploads/2013/01/Lyle-Tuttle-artist-large.jpg)
-
-	Tuttle was born in Chariton, Iowa in 1931 but grew up in Ukiah, California. At the age of fourteen he purchased his first tattoo for $3.50. In 1949, he began tattooing professionally.[2] In 1954 he opened his own studio in San Francisco. This first shop was open for nearly 30 years. Tuttle tattooed Janis Joplin, Cher, Henry Fonda, Paul Stanley, Joan Baez, the Allman Brothers, and many other notable musicians, actors, and celebrities.
-
-	#Lyle Tuttle's Tattoo Museum and Studio
-	```
-	- center: [37.8024, -122.4135]
-	- zoom: 17
-	```
-	![Lyle Tuttle](http://www.lyletuttle.com/_Media/lyle-tuttle-2012_med.jpeg)
-
-	His first shop when working for Bert Grimm at 16 Cedar Way, Long Beach, CA. on "The Pike". After tattooing in Anchorage and Fairbanks, AK. and Oakland, CA., Lyle opened up shop in 1960 at #30 7th St., in between Mission St. and Market St., also referred to as South of Market, San Francisco, CA. As the story goes, the end of an era and the beginning of a new one. Lyle tattooed at #30 7th St., San Francisco, CA. for 29 and a half years, until the Loma Prieta Earthquake in 1989 caused the building to be "yellow tagged". The shop and the museum are both now open at 841 Columbus Avenue.
+  ```
+	-title: "Duckpins Across Connecticut"
+	-author: "Trip Kirkpatrick"
+	-baseurl: "http://georeferencer-0.tileserver.com//b5bc704239bdb10e8d323f9ade18c0d65de168c6/map/J7HhAxvJEL29OwQw7N4jJZ/201412192146-E3UrAF/affine/{z}/{x}/{y}.png"
 	```
 
+	#Duckpins Across Connecticut
+	##Where to get your bowl on
+	```
+	- center: [41.36849786, -72.91981278]
+	- zoom: 9
+	```
 
-##And, the code for the Custom HTML Popup in CartoDB:
-
-```
-<div class="cartodb-popup header with-image v2" data-cover="true">
-  <a href="#close" class="cartodb-popup-close-button close">x</a>
-  <div class="cartodb-popup-header">
-    <div class="cover">
-      <div id="spinner"></div>
-      <div class="image_not_found"> <i></i> <a href="#/map" class="help">Non-valid picture URL</a></div>
-      <span class="separator"></span>
-      <h1 class="order1">{{name}}</h1>
-      <div class="shadow"></div>
-      <img src="{{img_url1}}" style="height:138px;display:inline" />
-    </div>
-  </div>
-  <div class="cartodb-popup-content-wrapper">
-    <div class="cartodb-popup-content">
-      <p>{{description}}</p>
-      <a href="{{link_url1}}" target="_blank"'>More Information</a>
-    </div>
-  </div>
-  <div class="cartodb-popup-tip-container"></div>
-</div>
-```
+	Duckpin bowling takes place in [a very few parts of the USA](http://www.duckpins.com/houses.htm). Fortunately for anyone in Connecticut who wants to bowl this way, we have several options .
 
 
+	#Johnson's Lanes
+	##Hamden
+	```
+	- center: [41.36849786, -72.91981278]
+	- zoom: 10
+	L.marker([41.36849786, -72.91981278]).actions.addRemove(S.map)
+	```
+
+	This alley is 3.93 miles from my office at HGS.
 
 
+	#Woodlawn Duckpin Bowling Center
+	##West Haven
+	```
+	- center: [41.25957012, -72.96393912]
+	- zoom: 10
+	L.marker([41.25957012, -72.96393912]).actions.addRemove(S.map)
+	```
+
+	This alley is 4.05 miles from my office at HGS.
 
 
+	#Highland Bowl Cheshire
+	##Cheshire
+	```
+	- center: [41.53197533, -72.89479854]
+	- zoom: 10
+	L.marker([41.53197533, -72.89479854]).actions.addRemove(S.map)
+	```
+
+	This alley is 15.29 miles from my office at HGS.
 
 
+	#Perillo's Bowl-A-Drome
+	##Waterbury
+	```
+	- center: [41.55246416, -73.00245569]
+	- zoom: 10
+	L.marker([41.55246416, -73.00245569]).actions.addRemove(S.map)
+	```
+
+	This alley is 17.03 miles from my office at HGS.
 
 
+	#St. Joseph's Lanes
+	##Waterbury
+	```
+	- center: [41.54514542, -73.04669469]
+	- zoom: 10
+	L.marker([41.54514542, -73.04669469]).actions.addRemove(S.map)
+	```
 
+	This alley is 17.21 miles from my office at HGS.
+
+
+	#T-Bowl Lanes
+	##Newington
+	```
+	- center: [41.65569301, -72.72375509]
+	- zoom: 10
+	L.marker([41.65569301, -72.72375509]).actions.addRemove(S.map)
+	```
+
+	This alley is 26 miles from my office at HGS.
+
+
+	#Danbury Lanes
+	##Danbury
+	```
+	- center: [41.4192612, -73.45107284]
+	- zoom: 10
+	L.marker([41.4192612, -73.45107284]).actions.addRemove(S.map)
+	```
+
+	This alley is 28.05 miles from my office at HGS.
+
+
+	#Highland Bowl Hartford
+	##Hartford
+	```
+	- center: [41.76624689, -72.71160042]
+	- zoom: 10
+	L.marker([41.76624689, -72.71160042]).actions.addRemove(S.map)
+	```
+
+	This alley is 33.32 miles from my office at HGS.
+
+
+	#K of C Lanes
+	##Torrington
+	```
+	- center: [41.79695483, -73.12477256]
+	- zoom: 10
+	L.marker([41.79695483, -73.12477256]).actions.addRemove(S.map)
+	```
+
+	This alley is 34.98 miles from my office at HGS.
+
+
+	#Arcade Lanes
+	##Torrington
+	```
+	- center: [41.81182388, -73.12117084]
+	- zoom: 10
+	L.marker([41.81182388, -73.12117084]).actions.addRemove(S.map)
+	```
+
+	This alley is 35.91 miles from my office at HGS.
+
+
+	#Holiday Lanes
+	##Manchester
+	```
+	- center: [41.7677111, -72.56432808]
+	- zoom: 10
+	L.marker([41.7677111, -72.56432808]).actions.addRemove(S.map)
+	```
+
+	This alley is 36.68 miles from my office at HGS.
+
+
+	#Laurel Bowling Lanes
+	##Winsted
+	```
+	- center: [41.8689231, -72.96067763]
+	- zoom: 10
+	L.marker([41.8689231, -72.96067763]).actions.addRemove(S.map)
+	```
+
+	This alley is 38.49 miles from my office at HGS.
+
+
+	#Family Bowl
+	##Waterford
+	```
+	- center: [41.34209212, -72.12564027]
+	- zoom: 10
+	L.marker([41.34209212, -72.12564027]).actions.addRemove(S.map)
+	```
+
+	This alley is 41.71 miles from my office at HGS.
+
+
+	#Lucky Strike Lanes
+	##Mansfield
+	```
+	- center: [41.73775635, -72.25811745]
+	- zoom: 10
+	L.marker([41.73775635, -72.25811745]).actions.addRemove(S.map)
+	```
+
+	This alley is 45.46 miles from my office at HGS.
+
+
+	#TKB Lanes
+	## Rockville, members only
+	```
+	- center: [41.86537713, -72.45084037]
+	- zoom: 10
+	L.marker([41.86537713, -72.45084037]).actions.addRemove(S.map)
+	```
+
+	This alley is 45.49 miles from my office at HGS.
